@@ -1,5 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_step_up_demo/freezed/model/user_model.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'user_api.g.dart';
+
+@riverpod
+UserApi userApi(Ref ref) {
+  return UserApi();
+}
 
 class UserApi {
   final Dio _dio;
