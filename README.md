@@ -17,9 +17,9 @@ dev:riverpod_lint
 ```sh
 flutter pub add \
   freezed_annotation \
+  json_annotation \
   --dev build_runner \
   --dev freezed \
-  json_annotation \
   --dev json_serializable
 ```
 
