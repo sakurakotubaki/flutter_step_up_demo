@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'main.g.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -15,51 +17,56 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+@riverpod
+class Counter extends _$Counter {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  int build() {
+    return 0;
   }
 
+  void increment() {
+    state++;
+  }
+}
+
+class MyHomePage extends ConsumerWidget {
+  const MyHomePage({super.key});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counter = ref.watch(counterProvider);
+
+    ref.listen<int>(counterProvider, (previous, next) {
+      if (next > 5) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('５を超えたよ! $next')));
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
 
-        title: Text(widget.title),
+        title: Text("Counter"),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text('$counter', style: Theme.of(context).textTheme.headlineMedium),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          ref.read(counterProvider.notifier).increment();
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
